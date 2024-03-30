@@ -40,11 +40,7 @@ services:
     container_name: cvat_redis_inmem
     image: redis:7.2.3-alpine
     restart: always
-    command: [
-      "redis-server",
-      "--save", "60", "100",
-      "--appendonly", "yes",
-    ]
+    command: ['redis-server', '--save', '60', '100', '--appendonly', 'yes']
     volumes:
       - cvat_inmem_db:/data
     networks:
@@ -54,9 +50,7 @@ services:
     container_name: cvat_redis_ondisk
     image: apache/kvrocks:2.7.0
     restart: always
-    command: [
-      "--dir", "/var/lib/kvrocks/data"
-    ]
+    command: ['--dir', '/var/lib/kvrocks/data']
     # The kvrocks image a) has a healthcheck command, and b) has a root process
     # that doesn't reap children, so it's susceptible to the problem described here:
     # <https://stackoverflow.com/a/77109064>. Kvrocks also uses a tiny timeout for
@@ -75,8 +69,7 @@ services:
     depends_on:
       <<: *backend-deps
       cvat_opa:
-        condition:
-          service_started
+        condition: service_started
     environment:
       <<: *backend-env
       DJANGO_MODWSGI_EXTRA_ARGS: ''
@@ -235,7 +228,7 @@ services:
     container_name: traefik
     restart: always
     ports:
-      - 8080:8080
+      - 8093:8080
       - 8090:8090
     environment:
       CVAT_HOST: ${CVAT_HOST:-localhost}
@@ -250,7 +243,7 @@ services:
       # overridden by other Compose files.
       TRAEFIK_LOG_FORMAT: json
       TRAEFIK_ENTRYPOINTS_web_ADDRESS: :8080
-      TRAEFIK_PROVIDERS_DOCKER_EXPOSEDBYDEFAULT: "false"
+      TRAEFIK_PROVIDERS_DOCKER_EXPOSEDBYDEFAULT: 'false'
       TRAEFIK_PROVIDERS_DOCKER_NETWORK: cvat
       TRAEFIK_PROVIDERS_FILE_DIRECTORY: /etc/traefik/rules
     # Uncomment to get Traefik dashboard
@@ -267,10 +260,10 @@ services:
     networks:
       - cvat
     logging:
-      driver: "json-file"
+      driver: 'json-file'
       options:
         max-size: 100m
-        max-file: "10"
+        max-file: '10'
 
   cvat_opa:
     container_name: cvat_opa
